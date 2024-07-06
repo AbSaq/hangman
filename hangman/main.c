@@ -23,7 +23,15 @@ int has_char(char str[], char c) {
     return 0;
 }
 
-void update_progress(char *original_word, char *empty_word, char found_char) {
+void create_progress_word(char * progress_word) {
+    int len = len_of_str(progress_word);
+    for (int i =0; i<len; i++) {
+        progress_word[i] = '_';
+    }
+    progress_word[len-1] = '\0';
+}
+
+void update_progress_word(char *original_word, char *empty_word, char found_char) {
     //printf("update_progress (%s) (%s) (%c)\n", original_word, empty_word, found_char);
     for (int i = 0; i<len_of_str(original_word); i++) {
         if (original_word[i] == found_char)
@@ -45,14 +53,6 @@ char get_char(void) {
     return ch;
 }
 
-void create_progress_word(char * progress_word) {
-    int len = len_of_str(progress_word);
-    for (int i =0; i<len; i++) {
-        progress_word[i] = '_';
-    }
-    progress_word[len-1] = '\0';
-}
-
 int main() {
     short int attempts = 5;
     char word_to_guess[] = "dread";
@@ -62,22 +62,27 @@ int main() {
     create_progress_word(progress_word);
 
     int won = 0;
-    while (attempts > 0 | won) {
-        char guessed_character = get_char();
+    while (attempts > 0 && !won) {
+        const char guessed_character = get_char();
 
-        int guessed_right = has_char(word_to_guess, guessed_character);
 
-        if (guessed_right) {
-            update_progress(word_to_guess, progress_word, guessed_character);
+        const int already_guessed = has_char(progress_word, guessed_character);
+        const int guessed_right = has_char(word_to_guess, guessed_character);
+
+        if (already_guessed) {
+            printf("already correctly guessed %c.\n", guessed_character);
+        }
+        else if (guessed_right) {
+            update_progress_word(word_to_guess, progress_word, guessed_character);
             printf("correct! %s\n", progress_word);
 
             if (!has_char(progress_word, '_')) {
                 won = 1;
             }
         }
-        else { // guessed wrong
+        else {
             attempts--;
-            printf("false! %d/5 attempts left.\n", attempts);
+            printf("incorrect character! %d/5 attempts left.\n", attempts);
         }
     }
 
