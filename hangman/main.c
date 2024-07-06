@@ -23,25 +23,12 @@ int has_char(char str[], char c) {
     return 0;
 }
 
-
-char* set_empty_guess(char *str) {
-    int len = len_of_str(str);
-    printf("%d", len);
-    for (int i = 1; i<len; i++) {
-        str[i] = '_';
-    }
-    return str;
-}
-
-
 void update_progress(char *original_word, char *empty_word, char found_char) {
     //printf("update_progress (%s) (%s) (%c)\n", original_word, empty_word, found_char);
     for (int i = 0; i<len_of_str(original_word); i++) {
         if (original_word[i] == found_char)
             empty_word[i] = found_char;
     }
-    //printf("update_progress2 (%s) (%s) (%c)\n", original_word, empty_word, found_char);
-
 }
 
 
@@ -58,19 +45,23 @@ char get_char(void) {
     return ch;
 }
 
+void create_progress_word(char * progress_word) {
+    int len = len_of_str(progress_word);
+    for (int i =0; i<len; i++) {
+        progress_word[i] = '_';
+    }
+    progress_word[len-1] = '\0';
+}
+
 int main() {
-    int won = 0;
     short int attempts = 5;
     char word_to_guess[] = "dread";
     int len = len_of_str(word_to_guess);
 
     char progress_word[len+1];
-    for (int i =0; i<len_of_str(word_to_guess); i++) {
-        progress_word[i] = '_';
-    }
-    progress_word[len] = '\0';
+    create_progress_word(progress_word);
 
-
+    int won = 0;
     while (attempts > 0 | won) {
         char guessed_character = get_char();
 
@@ -80,12 +71,9 @@ int main() {
             update_progress(word_to_guess, progress_word, guessed_character);
             printf("correct! %s\n", progress_word);
 
-            int finished = has_char(progress_word, '_');
-            if (!finished) {
+            if (!has_char(progress_word, '_')) {
                 won = 1;
-                break;
             }
-
         }
         else { // guessed wrong
             attempts--;
