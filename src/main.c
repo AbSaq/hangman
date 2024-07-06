@@ -11,7 +11,7 @@ int len_of_str(const char *str) {
 }
 
 int has_char(const char str[], char c) {
-    int len = len_of_str(str);
+    const int len = len_of_str(str);
     for (int i = 0; i<len; i++) {
         if (str[i] == c) {
             return 1;
@@ -21,7 +21,7 @@ int has_char(const char str[], char c) {
 }
 
 void create_progress_word(char * progress_word, const char * from_word) {
-    int len = len_of_str(from_word);
+    const int len = len_of_str(from_word);
     for (int i =0; i<len; i++) {
         if (from_word[i] == ' ') {
             progress_word[i] = ' ';
