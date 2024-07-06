@@ -10,4 +10,4 @@
 /modules.xml
 /editor.xml
 /vcs.xml
-
+*.exe
