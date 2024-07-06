@@ -1,9 +1,8 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 
 
-int len_of_str(char *str) {
+int len_of_str(const char *str) {
     int i = 0;
     while (1) {
         if (str[i] == '\0') {
@@ -13,7 +12,7 @@ int len_of_str(char *str) {
     }
 }
 
-int has_char(char str[], char c) {
+int has_char(const char str[], char c) {
     int len = len_of_str(str);
     for (int i = 0; i<len; i++) {
         if (str[i] == c) {
@@ -23,7 +22,7 @@ int has_char(char str[], char c) {
     return 0;
 }
 
-void create_progress_word(char * progress_word, char * from_word) {
+void create_progress_word(char * progress_word, const char * from_word) {
     int len = len_of_str(from_word);
     for (int i =0; i<len; i++) {
         if (from_word[i] == ' ') {
@@ -37,11 +36,10 @@ void create_progress_word(char * progress_word, char * from_word) {
     progress_word[len] = '\0';
 }
 
-void update_progress_word(char *original_word, char *empty_word, char found_char) {
-    //printf("update_progress (%s) (%s) (%c)\n", original_word, empty_word, found_char);
+void update_progress_word(const char * original_word, char *progress_word, char found_char) {
     for (int i = 0; i<len_of_str(original_word); i++) {
         if (original_word[i] == found_char)
-            empty_word[i] = found_char;
+            progress_word[i] = found_char;
     }
 }
 
@@ -59,11 +57,8 @@ char get_char(void) {
     return ch;
 }
 
-int main() {
-    short int attempts = 5;
-    char word_to_guess[] = "saudi arabia";
+void run_game(const char * word_to_guess, int attempts) {
     int len = len_of_str(word_to_guess);
-
     char progress_word[len+1];
     create_progress_word(progress_word, word_to_guess);
 
@@ -82,9 +77,8 @@ int main() {
             update_progress_word(word_to_guess, progress_word, guessed_character);
             printf("correct! %s\n", progress_word);
 
-            if (!has_char(progress_word, '_')) {
-                won = 1;
-            }
+            won = !has_char(progress_word, '_');
+
         }
         else {
             attempts--;
@@ -98,6 +92,16 @@ int main() {
     else {
         printf("thumb_down");
     }
-
 }
+
+int main() {
+    const char * word = "saudi arabia";
+    const int attempts = 5;
+
+    run_game(word, attempts);
+
+    return 0;
+}
+
+
 
