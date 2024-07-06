@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 
 enum GuessResult {
@@ -55,10 +54,15 @@ char get_char(void) {
     while (1) {
         char input = ' ';
         scanf("%c", &input);
-        if (input == 10) {
+        if (input == 10 && ch == ' ') {
+            continue;;
+        }
+        if (input == 10 && ch != ' ') {
             break;
         }
         ch = input;
+
+
     }
     return ch;
 }
@@ -79,7 +83,7 @@ void run_game(const char * word_to_guess, int attempts) {
     create_progress_word(progress_word, word_to_guess);
 
     int won = 0;
-    printf("guess the word %s.n", progress_word);
+    printf("guess the word %s.\n", progress_word);
     while (attempts > 0 && !won) {
         const char guessed_character = get_char();
 
@@ -96,12 +100,9 @@ void run_game(const char * word_to_guess, int attempts) {
                 won = !has_char(progress_word, '_');
 
         }
-        else  if (result == INCORRECT_GUESS){
+        else {
             attempts--;
             printf("incorrect character! %d/5 attempts left.\n", attempts);
-        }
-        else {
-            exit(-100);
         }
     }
 
@@ -113,8 +114,49 @@ void run_game(const char * word_to_guess, int attempts) {
     }
 }
 
+int is_wanted_category(char * line, char * category) {
+    if (len_of_str(line)-4 != len_of_str(category)) {
+        return 0;
+    }
+    const int len = len_of_str(category);
+    for (int i = 0; i<len; i++) {
+        if (line[i+3] != category[i]) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+void remove_new_line(char * word) {
+    int len = len_of_str(word);
+    for (int i = 0; i<len; i++) {
+        if (word[i] == '\n') {
+            word[i] = '\0';
+            return;
+        }
+    }
+}
+
+void get_word_from_file(char * word, char * category) {
+    FILE *words = fopen("src\\words.txt", "r");
+    while (1) {
+        char line[50];
+        fgets(line, 50, words);
+
+        if (line[0] == 'c' && line[1] == ':'  && line[2] == ' ') {
+            const int is_wanted_categor = is_wanted_category(line, category);
+            if (is_wanted_categor) {
+                fgets(word, 50, words);
+                remove_new_line(word);
+                return;
+            }
+        }
+    }
+}
+
 int main() {
-    const char * word = "saudi arabia";
+    char word[50];
+    get_word_from_file(word, "fruits");
     const int attempts = 5;
 
     run_game(word, attempts);

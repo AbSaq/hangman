@@ -2,7 +2,7 @@ c: countries
 saudi arabia
 jordan
 united states
-c: foods
+c: fruits
 apple
 orange
 banana
