@@ -23,12 +23,18 @@ int has_char(char str[], char c) {
     return 0;
 }
 
-void create_progress_word(char * progress_word) {
-    int len = len_of_str(progress_word);
+void create_progress_word(char * progress_word, char * from_word) {
+    int len = len_of_str(from_word);
     for (int i =0; i<len; i++) {
-        progress_word[i] = '_';
+        if (from_word[i] == ' ') {
+            progress_word[i] = ' ';
+        }
+        else {
+            progress_word[i] = '_';
+
+        }
     }
-    progress_word[len-1] = '\0';
+    progress_word[len] = '\0';
 }
 
 void update_progress_word(char *original_word, char *empty_word, char found_char) {
@@ -55,11 +61,11 @@ char get_char(void) {
 
 int main() {
     short int attempts = 5;
-    char word_to_guess[] = "dread";
+    char word_to_guess[] = "saudi arabia";
     int len = len_of_str(word_to_guess);
 
     char progress_word[len+1];
-    create_progress_word(progress_word);
+    create_progress_word(progress_word, word_to_guess);
 
     int won = 0;
     while (attempts > 0 && !won) {
