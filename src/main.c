@@ -1,4 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
+
+
+enum GuessResult {
+    CORRECT_GUESS,
+    INCORRECT_GUESS,
+    DONE_GUESS,
+};
 
 int len_of_str(const char *str) {
     int i = 0;
@@ -55,32 +63,45 @@ char get_char(void) {
     return ch;
 }
 
+enum GuessResult result_of_guess(const char guessed_character, const char * word_to_guess, const char * progress_word) {
+    if (has_char(progress_word, guessed_character)) {
+        return DONE_GUESS;
+    }
+    else if (has_char(word_to_guess, guessed_character)) {
+        return CORRECT_GUESS;
+    }
+    return INCORRECT_GUESS;
+}
+
 void run_game(const char * word_to_guess, int attempts) {
     int len = len_of_str(word_to_guess);
     char progress_word[len+1];
     create_progress_word(progress_word, word_to_guess);
 
     int won = 0;
+    printf("guess the word %s.n", progress_word);
     while (attempts > 0 && !won) {
         const char guessed_character = get_char();
 
 
-        const int already_guessed = has_char(progress_word, guessed_character);
-        const int guessed_right = has_char(word_to_guess, guessed_character);
+        const enum GuessResult result = result_of_guess(guessed_character, word_to_guess, progress_word);
 
-        if (already_guessed) {
-            printf("already correctly guessed %c.\n", guessed_character);
+        if (result == DONE_GUESS) {
+            printf("already correctly guessed '%c'.\n", guessed_character);
         }
-        else if (guessed_right) {
-            update_progress_word(word_to_guess, progress_word, guessed_character);
-            printf("correct! %s\n", progress_word);
+        else if (result == CORRECT_GUESS) {
+                update_progress_word(word_to_guess, progress_word, guessed_character);
+                printf("correct! %s\n", progress_word);
 
-            won = !has_char(progress_word, '_');
+                won = !has_char(progress_word, '_');
 
         }
-        else {
+        else  if (result == INCORRECT_GUESS){
             attempts--;
             printf("incorrect character! %d/5 attempts left.\n", attempts);
+        }
+        else {
+            exit(-100);
         }
     }
 
